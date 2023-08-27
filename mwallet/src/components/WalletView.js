@@ -15,7 +15,6 @@ import logo from "../noImg.png";
 import axios from "axios";
 import { CHAINS_CONFIG } from "../chains";
 import { ethers } from "ethers";
-import { useEnsAddress, useEnsAvatar } from "wagmi";
 
 // wallet has the public address of the newly created account
 
@@ -37,15 +36,17 @@ function WalletView({
   const [hash, setHash] = useState(null);
   const [address, setAddress] = useState(null);
   const [avatar, setAvatar] = useState(null);
+  const [qrinput, setqrinput] = useState(null);
+  const [qravatar, setqrAvatar] = useState(null);
+  const [qrlink, setqrLink] = useState(null);
+  const [resolve, setResolve] = useState(null);
+  const [displayAddress, setDisplayAddress] = useState(null);
 
   const handleInputChange = async (e) => {
     const input = e.target.value;
     setSendToAddress(input);
     setAddress(input);
-    console.log(address);
     const isPotentialEnsName = address?.includes(".");
-    console.log(isPotentialEnsName);
-    console.log(ethers.isAddress(input));
 
     if (!input) {
       setAvatar(null);
@@ -64,7 +65,40 @@ function WalletView({
           await new Promise((resolve) => setTimeout(resolve, 4000));
           setSendToAddress(address2);
         }
-        console.log("Avatar:", avatar);
+      } catch (error) {
+        console.error("Error fetching resolver data:", error);
+      }
+    }
+  };
+
+  const handleQRInput = async (e) => {
+    const input = e.target.value;
+    setqrinput(input);
+    const isPotentialEnsName = input?.includes(".");
+
+    if (!input) {
+      setqrAvatar(null);
+      setqrLink(null);
+      setDisplayAddress(null);
+    }
+
+    if (isPotentialEnsName) {
+      const chain = CHAINS_CONFIG[selectedChain];
+
+      const provider = new ethers.JsonRpcProvider(chain.rpcUrl);
+      try {
+        const resolver = await provider.getResolver(input);
+        if (resolver) {
+          setResolve(resolver);
+          const useraddress = await resolver?.getAddress();
+          const shortenedAddress = `${useraddress.slice(
+            0,
+            5
+          )}...${useraddress.slice(38)}`;
+          setDisplayAddress(shortenedAddress);
+        }
+        const avatar = await resolver?.getAvatar();
+        setqrAvatar(avatar);
       } catch (error) {
         console.error("Error fetching resolver data:", error);
       }
@@ -189,6 +223,53 @@ function WalletView({
         </>
       ),
     },
+    {
+      key: "4",
+      label: `QR code`,
+      children: (
+        <>
+          <h3>Share your ENS profile via QR code</h3>
+
+          <div className="avatar">
+            {qravatar && (
+              <img src={qravatar} className="avatar-image" alt="Avatar" />
+            )}
+            {displayAddress && (
+              <div className="address">Address: {displayAddress}</div>
+            )}
+          </div>
+          <div className="sendRow">
+            <p style={{ width: "90px", textAlign: "left" }}>Name: </p>
+            <Input
+              value={qrinput}
+              onChange={handleQRInput}
+              placeholder=".eth"
+            />
+          </div>
+          <div className="qrcode">
+            {qrlink && <img src={qrlink} alt="QR code" />}
+          </div>
+          <Button
+            style={{ width: "100%", marginTop: "20px", marginBottom: "20px" }}
+            type="primary"
+            onClick={() => generateQRcode()}
+            disabled={!resolve}
+          >
+            Generate QR code
+          </Button>
+          {processing && (
+            <>
+              <Spin />
+              {hash && (
+                <Tooltip title={hash}>
+                  <p>Hover For Tx Hash</p>
+                </Tooltip>
+              )}
+            </>
+          )}
+        </>
+      ),
+    },
   ];
 
   async function sendTransaction(to, amount) {
@@ -228,6 +309,15 @@ function WalletView({
       setAmountToSend(null);
       setSendToAddress(null);
     }
+  }
+
+  async function generateQRcode() {
+    let link =
+      "https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=" +
+      "https://app.ens.domains/" +
+      qrinput;
+    setqrLink(link);
+    setResolve(null);
   }
 
   async function getAccountTokens() {

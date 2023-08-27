@@ -7,7 +7,7 @@ import Home from "./components/Home";
 import CreateAccount from "./components/CreateAccount";
 import RecoverAccount from "./components/RecoverAccount";
 import WalletView from "./components/WalletView";
-import { WagmiConfig, configureChains, createConfig, sepolia } from "wagmi";
+import { WagmiConfig, configureChains, createConfig } from "wagmi";
 import {
   avalanche,
   goerli,
