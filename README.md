@@ -2,6 +2,11 @@
 
 The Wallet Browser Extension is a versatile tool designed to simplify wallet management, facilitate transfers through ENS names, and generate QR codes for user profiles. The extension harnesses Moralis APIs to retrieve token and NFT information for the logged-in account.
 
+# Why It Matters:
+The Wallet Browser Extension is a valuable tool that bridges the gap between users and their cryptocurrency assets. Its user-friendly interface and advanced functionalities empower users to effortlessly manage their wallets, enhance their social presence through QR codes, and access essential token and NFT data, all from within their web browser. The extension aims to improve accessibility, security, and ease of use for users engaging with blockchain technology.
+
+<br />
+
 <p align="center">
     <img src="./mwallet/src/display.png" width="50%">
 </p>
@@ -55,3 +60,12 @@ The extension is compatible with the following chains:
 - Goerli Testnet
 - Polygon Mainnet
 - Avalanche Mainnet
+
+## Future Enhancements:
+- In future iterations, the project could incorporate features such as multi-chain support, enhanced security measures, integration with popular DeFi protocols, and a broader range of browser compatibility.
+
+## Acknowledgments
+
+- This project was inspired by Moralis Web3's Crypto Wallet Extension Tutorial.
+- https://www.youtube.com/watch?v=2ZYtqX4rOAU 
+
