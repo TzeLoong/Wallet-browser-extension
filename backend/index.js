@@ -40,10 +40,10 @@ app.get("/getTokens", async (req, res) => {
   const jsonResponse = {
     tokens: tokens.raw,
     nfts: myNfts,
-    balance: balance.raw.balance,
+    balance: balance.raw.balance / 10 ** 18,
   };
 
-  return res.status(200).json({ jsonResponse });
+  return res.status(200).json(jsonResponse);
 });
 
 Moralis.start({
