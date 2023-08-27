@@ -184,7 +184,7 @@ function WalletView({
           </h1>
           <div className="avatar">
             {avatar && (
-              <img src={avatar} className="avatar-image" alt="Avatar" />
+              <img src={avatar} className="avatar-image2" alt="Avatar" />
             )}
           </div>
           <div className="sendRow">
